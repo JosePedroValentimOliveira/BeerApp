@@ -4,44 +4,32 @@ import { StyleSheet} from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 
-import { createStackNavigator } from '@react-navigation/stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import SignedInScreen from './components/SignedInScreen';
-import SignedOutScreen from './components/SignedOutScreen';
+import StockScreen from './components/StockScreen';
+import AddScreen from './components/AddScreen';
+import BeerListScreen from './components/BeerListScreen';
 
+import {Ionicons, AntDesign} from '@expo/vector-icons';
+import {colors} from './assets/js/colors';
 
-
-const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 
 
 
 export default function App() {
-  const [isSignedIn,setSignedIn] = useState(false);
-  const load = async()=>{
-    try {
-      let loggedIn = await AsyncStorage.getItem('@logged_in');
-      if(loggedIn=="true")
-        {setSignedIn(true)}
-      else
-        {setSignedIn(false)}
-    } catch (error) {
-      
-    }
-  };
-   useEffect(()=>{
-      
-    load();
-   },[])
+  
+  useEffect(()=>{},[])
   
   return (
     <NavigationContainer >
-      <Stack.Navigator screenOptions={{headerShown:false}}>
-        { !isSignedIn ?<Stack.Screen name="SignedOut" component={SignedOutScreen}/> :<Stack.Screen name="SignedIn" component={SignedInScreen}/>}
-        
-        
-      </Stack.Navigator>
+      <Tab.Navigator tabBarOptions={{activeBackgroundColor:colors.primary,inactiveBackgroundColor:colors.primary, activeTintColor:colors.secondary}} >
+            <Tab.Screen name="MijnBieren" title='Mijn Bieren' component={StockScreen} options={{tabBarIcon:({color,size})=>(<Ionicons name="ios-beer" size={size} color={color}/>)}}/>
+            <Tab.Screen name="Add Beer" component={AddScreen}  options={{tabBarIcon:({color,size})=>(<AntDesign name="pluscircle" size={size} color={color} />)}}/>
+            <Tab.Screen name="Bierlijst" component={BeerListScreen} options={{tabBarIcon:({color,size})=>(<Ionicons name="ios-beer" size={size} color={color}/>)}}/>
+
+        </Tab.Navigator>
     </NavigationContainer>
   );
 }
