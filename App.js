@@ -24,7 +24,7 @@ export default function App() {
   
   return (
     <NavigationContainer >
-      <Tab.Navigator tabBarOptions={{activeBackgroundColor:colors.primary,inactiveBackgroundColor:colors.primary, activeTintColor:colors.secondary}} >
+      <Tab.Navigator  tabBarOptions={{activeBackgroundColor:colors.primary,inactiveBackgroundColor:colors.primary, activeTintColor:colors.secondary}} >
             <Tab.Screen name="MijnBieren" title='Mijn Bieren' component={StockScreen} options={{tabBarIcon:({color,size})=>(<Ionicons name="ios-beer" size={size} color={color}/>)}}/>
             <Tab.Screen name="Add Beer" component={AddScreen}  options={{tabBarIcon:({color,size})=>(<AntDesign name="pluscircle" size={size} color={color} />)}}/>
             <Tab.Screen name="Bierlijst" component={BeerListScreen} options={{tabBarIcon:({color,size})=>(<Ionicons name="ios-beer" size={size} color={color}/>)}}/>

@@ -1,39 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View ,Image, RefreshControl} from 'react-native';
-import { FlatList} from 'react-native-gesture-handler';
-
+import { StyleSheet, Text, View ,Image, RefreshControl, StatusBar} from 'react-native';
+import { FlatList, TouchableOpacity} from 'react-native-gesture-handler';
+import { createStackNavigator } from '@react-navigation/stack';
 import {apiCall} from '../assets/js/apiCall';
+import { colors } from '../assets/js/colors';
 
-const Beer = (props)=>{
-    return(
-        <View style={{borderWidth:2,borderColor:"black",padding:15,margin:2, flexDirection:"row", justifyContent:"space-between"}}>
-            <Text>{props.name}</Text>
-            <Text>{props.type}</Text>
-            <Text>{props.percentage}</Text>
-            <Image style={styles.image} source={{uri:props.image}}></Image>
-        </View>
-    )
-}
+import Detail from './DetailScreen';
 
-const renderItem = ({item})=>{
 
-    return <Beer name={item.beer_name} percentage={item.beer_percentage} type={item.beer_type} image={item.beer_img} key={item._id}/>
-}
 
-export default ()=>{
-    const [beers,setBeers] = useState([]);
+
+
+
+const stockList =({navigation})=>{
     const [refreshing,setRefreshing] = useState(false);
-    const wait = (timeout) => {
-        return new Promise(resolve => {
-          setTimeout(resolve, timeout);
-        });
-      }
+    const [stock,setStock] = useState([]);
 
-    const loadBeers = ()=>{
-        apiCall("dranken-lijst").then(data=>{
+    const Beer = (props)=>{
+        
+        return(
             
-            setBeers(data);
-        });
+            <TouchableOpacity onPress={()=>{navigation.navigate("Detail",{beer:props.beer});}} style={{backgroundColor:colors.tertiary,margin:2,padding:5,flex:1,flexDirection:"row"}}>
+                
+                <View style={{flex:1}}>
+                  <Image style={styles.image} source={{uri:props.beer.beer_img}}/>
+                </View>
+                <View style={{flex:2,justifyContent:"center",alignItems:"center"}}>
+                  <Text style={{color:"white",borderTopWidth:6,borderBottomWidth:6}}>{props.beer.beer_name}</Text>
+                  <Text style={{color:"white",borderBottomWidth:6}}>{props.beer.beer_percentage}</Text>
+                  <Text style={{color:"white"}}>{props.beer.beer_type}</Text>
+                  <Text></Text>
+                </View>
+    
+                <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+                <Text style={{color:"white",fontSize:30}}>{props.beer.stock}</Text>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+    const renderItem = ({item})=>{
+        return <Beer beer={item} key={item._id}/>
     }
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -41,14 +47,44 @@ export default ()=>{
         wait(1000).then(() => setRefreshing(false));
       }, []);
 
-    useEffect(()=>{
-        loadBeers();
-    },[])
+    const wait = (timeout) => {
+        return new Promise(resolve => {
+          setTimeout(resolve, timeout);
+        });
+      }
 
+    const loadBeers = async ()=>{
+        apiCall("stock").then(data=>{
+            
+            setStock(data);
+        });
+    }
+
+    useEffect(()=>{
+        navigation.addListener('focus',()=>{
+             loadBeers();
+         })
+         loadBeers();
+      },[])
     return(
         <View style={styles.container}>
-            <FlatList refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  data={beers} renderItem={renderItem} keyExtractor={(item)=>{return item._id}}/>
+            <StatusBar hidden={true}/>
+            <FlatList refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  data={stock} renderItem={renderItem} keyExtractor={(item)=>{return item._id}} />
         </View>
+    )
+}
+
+const Stack = createStackNavigator();
+const options ={headerStyle:{backgroundColor:colors.primary},headerTintColor:colors.tertiary};
+export default ({navigation})=>{
+
+    return(
+      
+        <Stack.Navigator >
+            <Stack.Screen options={{headerShown: false}} name="Mijn Bieren" component={stockList}/>
+            <Stack.Screen name="Detail" component={Detail} options={options}/>
+        </Stack.Navigator>
+        
     )
 }
 
@@ -56,12 +92,17 @@ const styles = StyleSheet.create({
     container: {
         
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.primary,
         alignItems: 'stretch',
         justifyContent: 'center',
-        padding:10
+        padding:5
+        
       },
       image:{
           width:70,height:70,resizeMode:'contain'
-      }
+      },
+      
+      itemInvisible: {
+        backgroundColor: 'transparent',
+      },
   });
