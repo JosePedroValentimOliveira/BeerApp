@@ -1,9 +1,8 @@
 import React, { useState,useRef } from 'react';
-import { StyleSheet,  View ,Image, ScrollView,TextInput, Dimensions,Text} from 'react-native';
+import { StyleSheet,  View ,Image, ScrollView,TextInput,Text} from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import {apiCall} from '../assets/js/apiCall';
 import {apiPost} from '../assets/js/apiPost';
-import Toast from 'react-native-toast-message';
 import {colors} from '../assets/js/colors';
 import { ActivityIndicator } from 'react-native';
 import { TouchableOpacity, TouchableHighlight } from 'react-native-gesture-handler';
@@ -62,7 +61,6 @@ export default ()=>{
         //onsubmit editing van de naam van het bier kan er een call gedaan 
         //worden naar de foto's en kunnen die ondertussen al inladen eventueel met activtyindictator over de view waar de fotos worden ingeladen
     <View style={styles.screenContainer}>
-        <Toast ref={(ref) => Toast.setRef(ref)} />
         <View style={styles.inputContainer}>
             <Image style={styles.logo} source={require('../assets/smets.png')}></Image>
         </View>

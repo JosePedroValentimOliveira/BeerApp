@@ -10,6 +10,7 @@ import StockScreen from './components/StockScreen';
 import AddScreen from './components/AddScreen';
 import BeerListScreen from './components/BeerListScreen';
 
+
 import {Ionicons, AntDesign} from '@expo/vector-icons';
 import {colors} from './assets/js/colors';
 

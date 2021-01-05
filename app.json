@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "BeerApp",
-    "slug": "BeerApp",
+    "name": "Biergarten Smets",
+    "slug": "BiergartenSmets",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/smetsLogo.png",
+    "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -20,8 +20,10 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.pedroOliveira.biergartenSmets",
+      "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/smets2.png",
+        "foregroundImage": "./assets/smets.png",
         "backgroundColor": "#5a6868"
       }
     },

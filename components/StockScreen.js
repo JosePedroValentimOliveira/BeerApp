@@ -26,8 +26,8 @@ const stockList =({navigation})=>{
                   <Image style={styles.image} source={{uri:props.beer.beer_img}}/>
                 </View>
                 <View style={{flex:2,justifyContent:"center",alignItems:"center"}}>
-                  <Text style={{color:"white",borderTopWidth:6,borderBottomWidth:6}}>{props.beer.beer_name}</Text>
-                  <Text style={{color:"white",borderBottomWidth:6}}>{props.beer.beer_percentage}</Text>
+                  <Text style={{color:"white",paddingTop:6,paddingBottom:6}}>{props.beer.beer_name}</Text>
+                  <Text style={{color:"white",paddingBottom:6}}>{props.beer.beer_percentage}</Text>
                   <Text style={{color:"white"}}>{props.beer.beer_type}</Text>
                   <Text></Text>
                 </View>
