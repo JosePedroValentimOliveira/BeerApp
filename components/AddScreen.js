@@ -1,4 +1,4 @@
-import React, { useState,useRef } from 'react';
+import React, { useState} from 'react';
 import { StyleSheet,  View ,Image, ScrollView,TextInput,Text} from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import {apiCall} from '../assets/js/apiCall';
@@ -10,14 +10,15 @@ import { TouchableOpacity, TouchableHighlight } from 'react-native-gesture-handl
 
 
 
-export default ()=>{
+
+export default ({navigation})=>{
     const [checked,setChecked] = useState("Blond");
     const [images,setImages] = useState();
     const [selectedImage,setSelectedImage] = useState();
     const [showImages,setShowImages]= useState(false);
     const [percentage,setPercentage]= useState("0");
     const [beerName,setBeerName] = useState("");
-    const textInput = useRef();
+
 
 
     const postName = (name)=>{
@@ -28,7 +29,7 @@ export default ()=>{
         
     }
 
-    const refreshPage = ()=>{setChecked("Blond");setImages([]);setSelectedImage();setShowImages(false);setPercentage("0");setBeerName(); textInput.clear()};
+    const refreshPage = ()=>{setChecked("Blond");setImages([]);setSelectedImage();setShowImages(false);setPercentage("0");setBeerName();};
     const saveBeer = ()=> {
        const beerObject = {
            beer_name: beerName,
@@ -53,6 +54,7 @@ export default ()=>{
             else{
                 alert("Toegevoegd");
                 refreshPage();
+                navigation.navigate("Bierlijst");
             }
         })
     }

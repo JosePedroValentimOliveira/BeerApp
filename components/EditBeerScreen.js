@@ -67,7 +67,7 @@ export default ({route,navigation})=>{
             //onsubmit editing van de naam van het bier kan er een call gedaan 
             //worden naar de foto's en kunnen die ondertussen al inladen eventueel met activtyindictator over de view waar de fotos worden ingeladen
         <View style={styles.screenContainer}>
-           
+            
             <View style={styles.inputContainer}>
                 <Image style={styles.logo} source={{uri:displayImage}}></Image>
             </View>

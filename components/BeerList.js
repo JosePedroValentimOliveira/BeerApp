@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Dialog from "react-native-dialog";
-import { StyleSheet, Text, View ,Image, RefreshControl, StatusBar ,  Dimensions, TouchableOpacity,Platform} from 'react-native';
+import { StyleSheet, Text, View ,Image, RefreshControl, StatusBar ,  Dimensions, TouchableOpacity,Platform,TextInput} from 'react-native';
 import { FlatList,} from 'react-native-gesture-handler';
 import {apiCall} from '../assets/js/apiCall';
 import {apiPost} from '../assets/js/apiPost';
 import { colors } from '../assets/js/colors';
+import {contains} from '../assets/js/filter';
+
 
 
 
@@ -25,7 +27,6 @@ const Beer = (props)=>{
 
 
 
-
 const formatData = (data, numColumns) => {
     const numberOfFullRows = Math.floor(data.length / numColumns);
   
@@ -39,20 +40,51 @@ const formatData = (data, numColumns) => {
   };
 
 const numColumns = 3 ;
-export default ({navigation,route})=>{
+export default ({navigation})=>{
    
     const [beers,setBeers] = useState([]);
+    const [allBeers,setAllBeers] = useState([]);
     const [refreshing,setRefreshing] = useState(false);
     const [overlay,setOverlay]= useState(false);
     const [currentItem,setCurrentItem]= useState();
     const [visible,setVisible] = useState(false);
+    const [visibleDelete,setVisibleDelete] = useState(false);
     const [quantity,setQuantity] = useState();
+    const [query,setQuery] = useState("");
+   
+    
+  
+
+  
     
     
     const editBeer = (currentBeer)=>{
       navigation.navigate('EditBeer',{beer:currentBeer});
-        }
-
+    }
+    const deleteBeer = (id)=>{
+      const deleted ={
+        beer_id: id
+      }
+      const options={
+        method:'POST',
+        headers:{
+            'Accept':'application/json',
+            'Content-Type':'application/json'
+        },
+        body: JSON.stringify(deleted)
+    };
+    apiPost(`/deleteBeer`,options).then(response=>{ 
+      if(response != null)
+      {
+        setVisibleDelete(false);
+        setOverlay(false);
+        loadBeers();
+      }
+      else{
+        alert("Er is iets misgegaan");
+      }
+    })
+    }
     const showDialog = ()=>{
       setVisible(true);
     }
@@ -60,13 +92,10 @@ export default ({navigation,route})=>{
       setVisible(false);
       setOverlay(true);
     };
+    const showDelete = ()=>{
+      setVisibleDelete(true);
+    }
    
-    const handleDelete = () => {
-      // The user has pressed the "Delete" button, so here you can do your own logic.
-      // ...Your logic
-      setVisible(false);
-      setOverlay(true);
-    };
 
   
     const SaveToStock = async()=>{
@@ -113,8 +142,8 @@ export default ({navigation,route})=>{
             <TouchableOpacity style={{position:"absolute",top:5,right:10}} onPress={()=>{setOverlay(false)}}>
             <Text style={{fontSize:30,color:"white"}}>X</Text>
         </TouchableOpacity>
-                <View style={{flex:1}}>
-                  <Image style={styles.overlayImage} source={{uri:currentItem.beer_img}}/></View>
+                <TouchableOpacity style={{flex:1}} onLongPress={showDelete}>
+                  <Image style={styles.overlayImage} source={{uri:currentItem.beer_img}}/></TouchableOpacity>
                 <View style={{flex:3, flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
                     <Text style={{padding:2, fontWeight:"bold"}}>{currentItem.beer_name}</Text>
                     <Text style={{padding:2}}>{currentItem.beer_percentage}</Text>
@@ -131,6 +160,7 @@ export default ({navigation,route})=>{
                     editBeer(currentItem)}} >
                     <Text style={{...styles.overlayButton}}>Aanpassen</Text>
                 </TouchableOpacity>
+               
             </View>
         </View>
         </View>
@@ -145,8 +175,10 @@ export default ({navigation,route})=>{
 
     const loadBeers = ()=>{
         apiCall("dranken-lijst").then(data=>{
-            
-            setBeers(data);
+      
+            setAllBeers(data);
+            setBeers(formatData(data,numColumns));
+         
         });
     }
     
@@ -182,6 +214,7 @@ export default ({navigation,route})=>{
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         loadBeers();
+        setQuery("")
         wait(1000).then(() => setRefreshing(false));
       }, []);
 
@@ -190,6 +223,7 @@ export default ({navigation,route})=>{
     useEffect(()=>{
       navigation.addListener('focus',()=>{
            loadBeers();
+           setQuery("")
            setOverlay(false);
        })
 
@@ -206,14 +240,23 @@ export default ({navigation,route})=>{
       
     }
 
-    const updateState = (data)=>{
-      setOverlay(data);
+    const handleSearch = (text)=>{
+      const formatQuery = text.toLowerCase();
+      setQuery(text);
+      setBeers(formatData(contains(allBeers,formatQuery),numColumns));
+      
     }
 
+    
+
+    
+  
     return(
         <View style={styles.container}>
             <StatusBar hidden={true}/>
-            <FlatList refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  data={formatData(beers,numColumns)} renderItem={renderItem} keyExtractor={(item)=>{return item._id}} numColumns={numColumns}/>
+            <FlatList ListHeaderComponent={        <TextInput style={{height: 40 ,padding: 10,margin:2, backgroundColor:"white"}} clearButtonMode="always" value={query}   placeholder="Search"  onChangeText={text=>handleSearch(text)} />
+} 
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  data={beers} renderItem={renderItem} keyExtractor={(item)=>{return item._id}} numColumns={numColumns}/>
 
             {overlay?<Overlay currentItem={currentItem}></Overlay>:<View></View>}
             {visible?
@@ -226,6 +269,19 @@ export default ({navigation,route})=>{
                 <View style={{flexDirection:"row",justifyContent:'space-evenly'}}>
                 <Dialog.Button style={styles.dialogButton} label="Cancel" onPress={handleCancel} />
                 <Dialog.Button style={styles.dialogButton} label="Voeg toe" onPress={SaveToStock} />
+                </View>
+              </Dialog.Container>
+            :<View></View>}
+            {visibleDelete?
+              <Dialog.Container visible={visibleDelete}>
+                <Dialog.Title>Verwijderen</Dialog.Title>
+                <Dialog.Description>
+                  Ben je zeker dat je {currentItem.beer_name} wilt verwijderen?
+                </Dialog.Description>
+                
+                <View style={{flexDirection:"row",justifyContent:'space-evenly'}}>
+                <Dialog.Button style={styles.dialogButton} label="Cancel" onPress={()=>{setVisibleDelete(false);setOverlay(true);}} />
+                <Dialog.Button style={styles.dialogButton} label="Verwijder" onPress={()=>{deleteBeer(currentItem._id)}} />
                 </View>
               </Dialog.Container>
             :<View></View>}
