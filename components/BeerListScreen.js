@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import {View,Text} from 'react-native'
+import {Ionicons} from '@expo/vector-icons';
 
 import BeerList from './BeerList';
 import EditScreen from './EditBeerScreen';

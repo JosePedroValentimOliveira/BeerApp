@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View ,Image, RefreshControl, StatusBar} from 'react-native';
+import { StyleSheet, Text, View ,Image, RefreshControl, StatusBar,TextInput} from 'react-native';
 import { FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import { createStackNavigator } from '@react-navigation/stack';
 import {apiCall} from '../assets/js/apiCall';
 import { colors } from '../assets/js/colors';
-
+import {contains} from '../assets/js/filter';
 import Detail from './DetailScreen';
 
 
@@ -15,7 +15,7 @@ import Detail from './DetailScreen';
 const stockList =({navigation})=>{
     const [refreshing,setRefreshing] = useState(false);
     const [stock,setStock] = useState([]);
-
+    const [allStock,setAllStock] = useState([]);
     const Beer = (props)=>{
         
         return(
@@ -55,21 +55,25 @@ const stockList =({navigation})=>{
 
     const loadBeers = async ()=>{
         apiCall("stock").then(data=>{
-            
+            setAllStock(data);
             setStock(data);
         });
+    }
+    const handleSearch = (text)=>{
+        const formatQuery = text.toLowerCase();
+        setStock(contains(allStock,formatQuery));
     }
 
     useEffect(()=>{
         navigation.addListener('focus',()=>{
              loadBeers();
          })
-         loadBeers();
+         
       },[])
     return(
         <View style={styles.container}>
             <StatusBar hidden={true}/>
-            <FlatList refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  data={stock} renderItem={renderItem} keyExtractor={(item)=>{return item._id}} />
+            <FlatList ListHeaderComponent={<TextInput style={{height: 40 ,padding: 10,margin:2, backgroundColor:"white"}} clearButtonMode="always"  placeholder="Search"  onChangeText={text=>handleSearch(text)} />} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  data={stock} renderItem={renderItem} keyExtractor={(item)=>{return item._id}} />
         </View>
     )
 }
