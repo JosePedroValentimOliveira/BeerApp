@@ -29,7 +29,6 @@ const Beer = (props)=>{
 
 
 
-
 const formatData = (data, numColumns) => {
     const numberOfFullRows = Math.floor(data.length / numColumns);
   
@@ -257,6 +256,7 @@ export default ({navigation})=>{
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         loadBeers();
+        setQuery("")
         wait(1000).then(() => setRefreshing(false));
       }, []);
 
@@ -265,7 +265,7 @@ export default ({navigation})=>{
     useEffect(()=>{
       navigation.addListener('focus',()=>{
            loadBeers();
-           setQuery("");
+           setQuery("")
            setOverlay(false);
        })
 
@@ -284,7 +284,7 @@ export default ({navigation})=>{
 
     const handleSearch = (text)=>{
       const formatQuery = text.toLowerCase();
-     
+      setQuery(text);
       setBeers(formatData(contains(allBeers,formatQuery),numColumns));
       
     }

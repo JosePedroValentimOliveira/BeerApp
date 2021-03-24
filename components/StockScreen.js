@@ -16,6 +16,7 @@ const stockList =({navigation})=>{
     const [refreshing,setRefreshing] = useState(false);
     const [stock,setStock] = useState([]);
     const [allStock,setAllStock] = useState([]);
+    const [query,setQuery] = useState("");
     const Beer = (props)=>{
        
         return(
@@ -59,17 +60,19 @@ const stockList =({navigation})=>{
         apiCall("stock").then(data=>{
             setAllStock(data);
             setStock(data);
-            
+            setQuery("");
         });
     }
     const handleSearch = (text)=>{
         const formatQuery = text.toLowerCase();
+        setQuery(text);
         setStock(contains(allStock,formatQuery));
     }
 
     useEffect(()=>{
         navigation.addListener('focus',()=>{
              loadBeers();
+             
          })
          
       },[])
