@@ -4,13 +4,31 @@ import { TouchableOpacity} from 'react-native-gesture-handler';
 
 import {apiCall} from '../assets/js/apiCall';
 import { colors } from '../assets/js/colors';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 
 
 export default ({navigation, route})=>{
     const {beer} = route.params;
+    /* alert(beer.expirationDate); */
     const [stock,setStock]= useState(beer.stock);
+    const [date, setDate] = useState(new Date());
+    const [mode, setMode] = useState('date');
+    const [show, setShow] = useState(false);
+    const [formattedDate,setFormattedDate] = useState("");
+
+    const onChange = (event,selectedDate) => {
+        const currentDate = selectedDate || date;
+        
+        setFormattedDate(format(currentDate, "MM/yyyy"));
+        setShow(Platform.OS === 'ios');
+        setDate(currentDate);
+      };
+
+
+
+
     useEffect(()=>{
         navigation.setOptions({title:beer.beer_name})
       },[])
@@ -39,9 +57,10 @@ export default ({navigation, route})=>{
             <View style={{...styles.center,flex:1}}>
                 
                 <View style={{flexDirection:'row'}}>
-                    <TouchableOpacity onPress={()=>{setStock(stock-1)}} style={{...styles.squareButton,backgroundColor:colors.tertiary, }}>
+                    {stock === 0? <View style={{...styles.noSquare}}></View>:<TouchableOpacity onPress={()=>{setStock(stock-1)}} style={{...styles.squareButton,backgroundColor:colors.tertiary, }}>
                         <Text style={{color:"white",fontSize:30}}>-</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>}
+                    
                     <View  style={{...styles.squareButton,backgroundColor:colors.primary, }}>
                         <TextInput style={{color:"white"}} onEndEditing={(e)=>{setStock(parseInt(e.nativeEvent.text))}}>{stock}</TextInput>
                     </View>
@@ -51,6 +70,19 @@ export default ({navigation, route})=>{
                     </TouchableOpacity>
                     
                 </View>
+                {/* <Text>Vervaldatum :</Text>
+                      {show && (
+                    
+                        <DateTimePicker
+                        style={{backgroundColor:'white',width:'50%'}}
+                          testID="dateTimePicker"
+                          value={date}
+                          mode={mode}
+                          is24Hour={true}
+                          display="default"
+                          onChange={onChange}
+                        />
+                      )} */}
             </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.button} onPress={()=>{update(beer._id,stock)}}>
@@ -91,6 +123,16 @@ const styles = StyleSheet.create({
         margin:10
        
     },
+    noSquare:{
+        width:60,
+        height:60,
+        padding:5,
+    
+        alignItems:"center",
+        justifyContent:"center",
+        margin:10
+       
+    },
     buttonContainer:{
         flex:2,
         alignItems:"stretch",
@@ -102,7 +144,7 @@ const styles = StyleSheet.create({
         borderColor:colors.secondary,
         alignSelf:"center",
         borderWidth:1,
-        padding:7,
+        padding:15,
         width:"80%",
         borderRadius:12,
         alignItems:"center",

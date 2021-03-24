@@ -17,7 +17,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pedroOliveira.biergartenSmets",
+      "buildNumber":"1.0.0"
     },
     "android": {
       "package": "com.pedroOliveira.biergartenSmets",

@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import { StyleSheet,  View ,Image, ScrollView,TextInput,Text} from 'react-native';
+import { StyleSheet,  View ,Image, ScrollView,TextInput,Text,Platform,Button} from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import {apiCall} from '../assets/js/apiCall';
 import {apiPost} from '../assets/js/apiPost';
@@ -18,8 +18,7 @@ export default ({navigation})=>{
     const [showImages,setShowImages]= useState(false);
     const [percentage,setPercentage]= useState("0");
     const [beerName,setBeerName] = useState("");
-
-
+    
 
     const postName = (name)=>{
         
@@ -63,56 +62,80 @@ export default ({navigation})=>{
         //onsubmit editing van de naam van het bier kan er een call gedaan 
         //worden naar de foto's en kunnen die ondertussen al inladen eventueel met activtyindictator over de view waar de fotos worden ingeladen
     <View style={styles.screenContainer}>
+        
         <View style={styles.inputContainer}>
             <Image style={styles.logo} source={require('../assets/smets.png')}></Image>
         </View>
     {/*Input fields and slider */}
+    <View style={{flex:6,backgroundColor:colors.tertiary,borderTopLeftRadius:40,borderTopRightRadius:40,padding:10,borderWidth:2,borderColor:'white'}}>
     <View style={styles.inputContainer}>
         <TextInput style={styles.input} defaultValue={beerName}  onEndEditing={(event)=>{postName(event.nativeEvent.text);setBeerName(event.nativeEvent.text)}} placeholder="Naam van het bier" placeholderTextColor={colors.secondary}/>
         
         <View style={{flexDirection:"row"}}>
         <TextInput  onChangeText={text => setPercentage(text)} style={{color:"white",fontSize:30}} placeholder="0" keyboardType="numbers-and-punctuation" value={percentage} />
         <Text style={{color:"white",fontSize:30}}>%</Text></View>
-    </View>
-    
         
+    </View>
+   
+
+
+    
+
+
+    
+    
     {/*RadioButtons */}
     <View style={styles.radioContainer}>
-        <RadioButton.Android
-            
-            color={colors.tertiary}
-            value="Blond"
-            status={ checked === 'Blond' ? 'checked' : 'unchecked' }
-            onPress={() => setChecked('Blond')}
-        />
-        <Text style={{color:"white"}}>Blond</Text>
-        <RadioButton.Android
-            color={colors.tertiary}
-            value="Donker"
-            status={ checked === 'Donker' ? 'checked' : 'unchecked' }
-            onPress={() => setChecked('Donker')}
-        />
-        <Text style={{color:"white"}}>Donker</Text>
-        <RadioButton.Android
-            color={colors.tertiary}
-            value="Rood"
-            status={ checked === 'Rood' ? 'checked' : 'unchecked' }
-            onPress={() => setChecked('Rood')}
-        />
-        <Text style={{color:"white"}}>Rood</Text>
-        <RadioButton.Android
-            color={colors.tertiary}
-            value="Amber"
-            status={ checked === 'Amber' ? 'checked' : 'unchecked' }
-            onPress={() => setChecked('Amber')}
-        />
-        <Text style={{color:"white"}}>Amber</Text>
+        <View style={{flexDirection:'row',alignItems:"center",marginRight:40}}>
+        
+            <View style={{flexDirection:'column',alignItems:"center",}}>
+                <RadioButton.Android
+                    color="white"
+                    value="Blond"
+                    status={ checked === 'Blond' ? 'checked' : 'unchecked' }
+                    onPress={() => setChecked('Blond')}/>
+                <RadioButton.Android
+                    color="white"
+                    value="Donker"
+                    status={ checked === 'Donker' ? 'checked' : 'unchecked' }
+                    onPress={() => setChecked('Donker')}/>
+            </View>
+            <View style={{flexDirection:'column',alignItems:"center"}}>
+                <Text style={{color:"white",paddingBottom:"5%"}}>Blond</Text>
+                <Text style={{color:"white"}}>Donker</Text>
+            </View>
+        </View>
+        
+        <View style={{flexDirection:'row',alignItems:"center"}}>
+            <View style={{flexDirection:'column',alignItems:"center"}}>
+                <RadioButton.Android
+                color="white"
+                value="Rood"
+                status={ checked === 'Rood' ? 'checked' : 'unchecked' }
+                onPress={() => setChecked('Rood')}
+                />
+                <RadioButton.Android
+                        color="white"
+                        value="Amber"
+                        status={ checked === 'Amber' ? 'checked' : 'unchecked' }
+                        onPress={() => setChecked('Amber')}
+                    />
+                
+            </View>
+                <View  style={{flexDirection:'column',alignItems:"center"}}>
+                    
+                    <Text style={{color:"white",paddingBottom:"5%"}}>Rood</Text>
+                    <Text style={{color:"white"}}>Amber</Text>
+                </View>
+            </View>
+        
+        
     </View>
 
     {/*Picture scrollview */}
     <View style={styles.scrollView}>
         {!showImages? <ActivityIndicator size="large"/> :
-            <View style={{backgroundColor:colors.primary,height:"100%"}} >
+            <View style={{backgroundColor:colors.tertiary,height:"100%"}} >
             <ScrollView horizontal={true} style={{}}  >
              
             {images.map((item)=>(
@@ -130,6 +153,7 @@ export default ({navigation})=>{
         <TouchableOpacity onPress={()=>{saveBeer();}} style={styles.button}>
             <Text style={{color:"white"}}>Voeg toe</Text>
         </TouchableOpacity>
+    </View>
     </View>
 </View>
     )
@@ -155,7 +179,9 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection:'row',
         alignItems:"center",
-        justifyContent:"center"
+        justifyContent:'center',
+        
+        padding:10
     },
     scrollView:{
         flex:2,
@@ -165,7 +191,8 @@ const styles = StyleSheet.create({
     buttonContainer:{
         flex:1,
         alignItems:"stretch",
-        justifyContent:"center"
+        justifyContent:"center",
+        
     
     },
     input:{
@@ -174,21 +201,22 @@ const styles = StyleSheet.create({
         borderWidth:2,
         padding:10,
         margin:5,
-        color:colors.secondary
+        color:colors.secondary,
+        borderRadius:10
     },
     image:{
-        width:100,height:100,resizeMode:"contain",borderWidth:1,borderColor:colors.secondary,alignSelf:"center",margin:1
+        width:100,height:100,resizeMode:"contain",borderWidth:1,borderRadius:5,borderColor:colors.secondary,alignSelf:"center",margin:1
     },
     logo:{
         width:120,height:120,resizeMode:"contain"
     },
-    selected:{backgroundColor:colors.tertiary},
+    selected:{backgroundColor:colors.primary},
     button:{
         backgroundColor:colors.primary,
         borderColor:colors.secondary,
         alignSelf:"center",
         borderWidth:1,
-        padding:7,
+        padding:15,
         width:"80%",
         borderRadius:12,
         alignItems:"center",

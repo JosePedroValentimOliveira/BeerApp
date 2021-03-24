@@ -17,19 +17,21 @@ const stockList =({navigation})=>{
     const [stock,setStock] = useState([]);
     const [allStock,setAllStock] = useState([]);
     const Beer = (props)=>{
-        
+       
         return(
             
-            <TouchableOpacity onPress={()=>{navigation.navigate("Detail",{beer:props.beer});}} style={{backgroundColor:colors.tertiary,margin:2,padding:5,flex:1,flexDirection:"row"}}>
+            <TouchableOpacity onPress={()=>{navigation.navigate("Detail",{beer:props.beer});}} style={{backgroundColor:colors.tertiary,margin:2,padding:5,flex:1,flexDirection:"row",borderRadius:10,borderColor:'white',borderWidth:2}}>
                 
-                <View style={{flex:1}}>
+                <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
                   <Image style={styles.image} source={{uri:props.beer.beer_img}}/>
                 </View>
                 <View style={{flex:2,justifyContent:"center",alignItems:"center"}}>
                   <Text style={{color:"white",paddingTop:6,paddingBottom:6}}>{props.beer.beer_name}</Text>
                   <Text style={{color:"white",paddingBottom:6}}>{props.beer.beer_percentage}</Text>
+                  
                   <Text style={{color:"white"}}>{props.beer.beer_type}</Text>
-                  <Text></Text>
+                  <Text style={{color:"white"}}>{props.beer.expirationDate}</Text>
+                 
                 </View>
     
                 <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
@@ -57,6 +59,7 @@ const stockList =({navigation})=>{
         apiCall("stock").then(data=>{
             setAllStock(data);
             setStock(data);
+            
         });
     }
     const handleSearch = (text)=>{
@@ -73,7 +76,7 @@ const stockList =({navigation})=>{
     return(
         <View style={styles.container}>
             <StatusBar hidden={true}/>
-            <FlatList ListHeaderComponent={<TextInput style={{height: 40 ,padding: 10,margin:2, backgroundColor:"white"}} clearButtonMode="always"  placeholder="Search"  onChangeText={text=>handleSearch(text)} />} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  data={stock} renderItem={renderItem} keyExtractor={(item)=>{return item._id}} />
+            <FlatList ListHeaderComponent={<TextInput style={{height: 40 ,padding: 10,margin:2, backgroundColor:"white",borderRadius:5}} clearButtonMode="always"  placeholder="Search"  onChangeText={text=>handleSearch(text)} />} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  data={stock} renderItem={renderItem} keyExtractor={(item)=>{return item._id}} />
         </View>
     )
 }
@@ -81,12 +84,12 @@ const stockList =({navigation})=>{
 const Stack = createStackNavigator();
 const options ={headerStyle:{backgroundColor:colors.primary},headerTintColor:colors.tertiary};
 export default ({navigation})=>{
-
+    const options ={headerStyle:{backgroundColor:colors.primary},headerTintColor:'white'};
     return(
       
         <Stack.Navigator >
             <Stack.Screen options={{headerShown: false}} name="Mijn Bieren" component={stockList}/>
-            <Stack.Screen name="Detail" component={Detail} options={options}/>
+            <Stack.Screen name="Detail" component={Detail} options={options} options={options}/>
         </Stack.Navigator>
         
     )

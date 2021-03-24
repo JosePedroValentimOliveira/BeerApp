@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Dialog from "react-native-dialog";
-import { StyleSheet, Text, View ,Image, RefreshControl, StatusBar ,  Dimensions, TouchableOpacity,Platform,TextInput} from 'react-native';
+import { StyleSheet, Text, View ,Image, RefreshControl, StatusBar ,  Dimensions, TouchableOpacity,Platform,TextInput,Button} from 'react-native';
 import { FlatList,} from 'react-native-gesture-handler';
 import {apiCall} from '../assets/js/apiCall';
 import {apiPost} from '../assets/js/apiPost';
 import { colors } from '../assets/js/colors';
 import {contains} from '../assets/js/filter';
-
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { format } from "date-fns";
+import { Checkbox } from 'react-native-paper';
 
 
 
@@ -52,6 +54,43 @@ export default ({navigation})=>{
     const [visibleDelete,setVisibleDelete] = useState(false);
     const [quantity,setQuantity] = useState();
     const [query,setQuery] = useState();
+
+    
+    const [date, setDate] = useState(new Date());
+    const [mode, setMode] = useState('date');
+    const [show, setShow] = useState(false);
+    const [formattedDate,setFormattedDate] = useState("");
+
+    const onChange = (event,selectedDate) => {
+        const currentDate = selectedDate || date;
+        
+        setFormattedDate(format(currentDate, "MM/yyyy"));
+        setShow(Platform.OS === 'ios');
+        setDate(currentDate);
+      };
+      
+    const onPressCheckbox = ()=>{
+      if(show == false){
+        setFormattedDate(format(date, "MM/yyyy"))
+      }
+      else if(show == true){
+        setFormattedDate("");
+      }
+      setShow(!show);
+      
+    }
+    <Checkbox.Android
+                        status={show ? 'checked' : 'unchecked'}
+                        onPress={() => {
+                          setShow(!show);
+                        }}
+                      />
+    
+      
+    
+     
+    
+    
     
   
 
@@ -86,7 +125,10 @@ export default ({navigation})=>{
     })
     }
     const showDialog = ()=>{
+      setFormattedDate("");
       setVisible(true);
+      setShow(false);
+      
     }
     const handleCancel = () => {
       setVisible(false);
@@ -104,7 +146,8 @@ export default ({navigation})=>{
         
       const stock ={
         beer_id: currentItem._id,
-        quantity: quantity
+        quantity: quantity,
+        expirationDate : formattedDate
       }
     
       const options={
@@ -136,7 +179,7 @@ export default ({navigation})=>{
       return(
         <View style={{position:"absolute",alignSelf:"center",width:"100%",height:"100%",backgroundColor: 'rgba(0,0,0,0.6)',justifyContent: 'center', alignItems: 'center'}}>
         
-        <View style={{position:"absolute",alignSelf:"center",width:"80%",height:"30%",backgroundColor:colors.tertiary,borderColor:"white",borderWidth:2}}>
+        <View style={{position:"absolute",alignSelf:"center",width:"80%",height:"30%",backgroundColor:colors.tertiary,borderColor:"white",borderWidth:2,borderRadius:10}}>
         
             <View style={{flex:3,flexDirection:"row",alignItems:"center"}}>
             <TouchableOpacity style={{position:"absolute",top:5,right:10}} onPress={()=>{setOverlay(false)}}>
@@ -245,7 +288,7 @@ export default ({navigation})=>{
       setBeers(formatData(contains(allBeers,formatQuery),numColumns));
       
     }
-
+   
     
 
     
@@ -253,7 +296,7 @@ export default ({navigation})=>{
     return(
         <View style={styles.container}>
             <StatusBar hidden={true}/>
-            <FlatList ListHeaderComponent={<TextInput style={{height: 40 ,padding: 10,margin:2, backgroundColor:"white"}} clearButtonMode="always"  placeholder="Search"  onChangeText={text=>handleSearch(text)} />} 
+            <FlatList ListHeaderComponent={<TextInput style={{height: 40 ,padding: 10,margin:2, backgroundColor:"white",borderRadius:5}} clearButtonMode="always"  placeholder="Search"  onChangeText={text=>handleSearch(text)} />} 
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  data={beers} renderItem={renderItem} keyExtractor={(item)=>{return item._id}} numColumns={numColumns}/>
 
             {overlay?<Overlay currentItem={currentItem}></Overlay>:<View></View>}
@@ -263,7 +306,30 @@ export default ({navigation})=>{
                 <Dialog.Description>
                   Geef in hoeveel je wilt toevoegen aan stock!
                 </Dialog.Description>
-                <Dialog.Input onEndEditing={(event)=>{setQuantity(event.nativeEvent.text)}} style={styles.dialogInput}></Dialog.Input>
+                <Dialog.Input onChangeText={(text)=>{setQuantity(text)}} style={styles.dialogInput}></Dialog.Input>
+                <View style={{flexDirection:'row',alignItems:"center",justifyContent:"center"}}>
+                      
+                      <Checkbox.Android
+                        status={show ? 'checked' : 'unchecked'}
+                        onPress={() => {
+                          onPressCheckbox();
+                        }}
+                      />
+                      <Text>Vervaldatum :</Text>
+                      {show && (
+                    
+                        <DateTimePicker
+                        style={{backgroundColor:'white',width:'50%'}}
+                          testID="dateTimePicker"
+                          value={date}
+                          mode={mode}
+                          is24Hour={true}
+                          display="default"
+                          onChange={onChange}
+                        />
+                      )}
+                    </View>
+                
                 <View style={{flexDirection:"row",justifyContent:'space-evenly'}}>
                 <Dialog.Button style={styles.dialogButton} label="Cancel" onPress={handleCancel} />
                 <Dialog.Button style={styles.dialogButton} label="Voeg toe" onPress={SaveToStock} />
@@ -276,6 +342,8 @@ export default ({navigation})=>{
                 <Dialog.Description>
                   Ben je zeker dat je {currentItem.beer_name} wilt verwijderen?
                 </Dialog.Description>
+                
+               
                 
                 <View style={{flexDirection:"row",justifyContent:'space-evenly'}}>
                 <Dialog.Button style={styles.dialogButton} label="Cancel" onPress={()=>{setVisibleDelete(false);setOverlay(true);}} />
@@ -309,7 +377,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flex: 1,
         margin: 3,
-        height: Dimensions.get('window').width/numColumns,
+        height: Dimensions.get('window').width/numColumns
+        ,borderRadius:5,borderColor:'white',borderWidth:2
         
        
       },

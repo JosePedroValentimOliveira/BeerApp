@@ -72,6 +72,9 @@ export default ({route,navigation})=>{
                 <Image style={styles.logo} source={{uri:displayImage}}></Image>
             </View>
         {/*Input fields and slider */}
+        <View style={{flex:6,backgroundColor:colors.tertiary,borderTopLeftRadius:40,borderTopRightRadius:40,padding:10,borderWidth:2,borderColor:'white'}}>
+
+        
         <View style={styles.inputContainer}>
             <TextInput style={styles.input} defaultValue={beerName}  onEndEditing={(event)=>{postName(event.nativeEvent.text);setBeerName(event.nativeEvent.text)}} placeholder="Naam van het bier" placeholderTextColor={colors.secondary}/>
             
@@ -83,41 +86,56 @@ export default ({route,navigation})=>{
             
         {/*RadioButtons */}
         <View style={styles.radioContainer}>
-            <RadioButton.Android
-                
-                color={colors.tertiary}
-                value="Blond"
-                status={ checked === 'Blond' ? 'checked' : 'unchecked' }
-                onPress={() => setChecked('Blond')}
-            />
-            <Text style={{color:"white"}}>Blond</Text>
-            <RadioButton.Android
-                color={colors.tertiary}
-                value="Donker"
-                status={ checked === 'Donker' ? 'checked' : 'unchecked' }
-                onPress={() => setChecked('Donker')}
-            />
-            <Text style={{color:"white"}}>Donker</Text>
-            <RadioButton.Android
-                color={colors.tertiary}
+        <View style={{flexDirection:'row',alignItems:"center",marginRight:40}}>
+        
+            <View style={{flexDirection:'column',alignItems:"center",}}>
+                <RadioButton.Android
+                    color="white"
+                    value="Blond"
+                    status={ checked === 'Blond' ? 'checked' : 'unchecked' }
+                    onPress={() => setChecked('Blond')}/>
+                <RadioButton.Android
+                    color="white"
+                    value="Donker"
+                    status={ checked === 'Donker' ? 'checked' : 'unchecked' }
+                    onPress={() => setChecked('Donker')}/>
+            </View>
+            <View style={{flexDirection:'column',alignItems:"center"}}>
+                <Text style={{color:"white",paddingBottom:"5%"}}>Blond</Text>
+                <Text style={{color:"white"}}>Donker</Text>
+            </View>
+        </View>
+        
+        <View style={{flexDirection:'row',alignItems:"center"}}>
+            <View style={{flexDirection:'column',alignItems:"center"}}>
+                <RadioButton.Android
+                color="white"
                 value="Rood"
                 status={ checked === 'Rood' ? 'checked' : 'unchecked' }
                 onPress={() => setChecked('Rood')}
-            />
-            <Text style={{color:"white"}}>Rood</Text>
-            <RadioButton.Android
-                color={colors.tertiary}
-                value="Amber"
-                status={ checked === 'Amber' ? 'checked' : 'unchecked' }
-                onPress={() => setChecked('Amber')}
-            />
-            <Text style={{color:"white"}}>Amber</Text>
-        </View>
+                />
+                <RadioButton.Android
+                        color="white"
+                        value="Amber"
+                        status={ checked === 'Amber' ? 'checked' : 'unchecked' }
+                        onPress={() => setChecked('Amber')}
+                    />
+                
+            </View>
+                <View  style={{flexDirection:'column',alignItems:"center"}}>
+                    
+                    <Text style={{color:"white",paddingBottom:"5%"}}>Rood</Text>
+                    <Text style={{color:"white"}}>Amber</Text>
+                </View>
+            </View>
+        
+        
+    </View>
     
         {/*Picture scrollview */}
         <View style={styles.scrollView}>
             {!showImages? <ActivityIndicator size="large"/> :
-                <View style={{backgroundColor:colors.primary,height:"100%"}} >
+                <View style={{backgroundColor:colors.tertiary,height:"100%"}} >
                 <ScrollView horizontal={true} style={{}}  >
                  
                 {images.map((item)=>(
@@ -133,8 +151,9 @@ export default ({route,navigation})=>{
         {/*Button */}
         <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={()=>{saveBeer();}} style={styles.button}>
-                <Text style={{color:"white"}}>Slaag op</Text>
+                <Text style={{color:"white"}}>Opslaan</Text>
             </TouchableOpacity>
+        </View>
         </View>
     </View>
         )
@@ -187,13 +206,13 @@ export default ({route,navigation})=>{
         logo:{
             width:120,height:120,resizeMode:"contain"
         },
-        selected:{backgroundColor:colors.tertiary},
+        selected:{backgroundColor:colors.primary},
         button:{
             backgroundColor:colors.primary,
             borderColor:colors.secondary,
             alignSelf:"center",
             borderWidth:1,
-            padding:7,
+            padding:15,
             width:"80%",
             borderRadius:12,
             alignItems:"center",

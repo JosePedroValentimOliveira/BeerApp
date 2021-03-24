@@ -11,7 +11,7 @@ const Stack = createStackNavigator();
 
 
 export default ()=>{
-    const options ={headerStyle:{backgroundColor:colors.primary},headerTintColor:colors.tertiary};
+    const options ={headerStyle:{backgroundColor:colors.primary},headerTintColor:'white'};
     return(
         <Stack.Navigator>
             <Stack.Screen options={{headerShown:false}} name="Bierlijst" component={BeerList}/>
