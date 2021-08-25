@@ -21,12 +21,50 @@ const stockList =({navigation})=>{
        
         return(
             
-            <TouchableOpacity onPress={()=>{navigation.navigate("Detail",{beer:props.beer});}} style={{backgroundColor:colors.tertiary,margin:2,padding:5,flex:1,flexDirection:"row",borderRadius:10,borderColor:'white',borderWidth:2}}>
+            <TouchableOpacity onPress={()=>{navigation.navigate("Detail",{beer:props.beer});}} style={{backgroundColor:colors.tertiary,margin:6,flex:1,flexDirection:"row",borderRadius:10}}>
                 
-                <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+
+                {/* <View style={{flex:4,flexDirection:"column",alignItems:"center"}}>
+                    <View style={{flex:1,width:"100%",alignItems:"center",justifyContent:"center"}}>
+                        <Text style={{padding:6,fontSize:16,fontWeight:'bold'}}>{props.beer.beer_name}</Text>
+                    </View>
+                    <View style={{flex:4,margin:6}}> 
+                        <Image style={styles.image} source={{uri:props.beer.beer_img}}/>
+                    </View>
+                    <View style={{flex:1,flexDirection:"row",width:"100%",alignItems:"center",justifyContent:"space-around",margin:6,fontWeight:'bold'}}>
+                        
+                        <Text style={{}}>{props.beer.beer_type}</Text>
+                        <Text style={{}}>{props.beer.beer_percentage}</Text>
+                        
+                    </View>
+                </View>
+                <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+                    <Text style={{fontSize:30}}>{props.beer.stock}</Text>
+                </View> */}
+                
+                <View style={{flex:2,alignItems:"center",justifyContent:"center",backgroundColor:"#e3c068",borderTopLeftRadius:10,borderBottomLeftRadius:10}}>
+                    <Image style={{...styles.image,margin:10}} source={{uri:props.beer.beer_img}}/>
+                </View>
+                <View style={{flex:5,flexDirection:"column"}}>
+                    <View style={{flex:1,alignItems:"center",justifyContent:"center",padding:6}}>
+                        <Text style={{fontSize:14,color:colors.white,fontWeight:"bold"}}>{props.beer.beer_name}</Text>
+                    </View>
+                    <View style={{flex:5,flexDirection:'row'}}>
+                        <View style={{flex:3,flexDirection:"column",alignItems:"center",justifyContent:"space-evenly"}}>
+                            <Text style={{}}>{props.beer.beer_type}</Text>
+                            <Text style={{}}>{props.beer.beer_percentage}</Text>
+                        </View>
+                        <View style={{flex:2,alignItems:"center",justifyContent:"center"}}>
+                            <Text style={{fontSize:30}}>{props.beer.stock}</Text>
+                        </View>
+                    </View>
+                    
+                </View>
+                
+                {/* <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
                   <Image style={styles.image} source={{uri:props.beer.beer_img}}/>
                 </View>
-                <View style={{flex:2,justifyContent:"center",alignItems:"center"}}>
+                <View style={{flex:3,justifyContent:"center",alignItems:"start"}}>
                   <Text style={{color:"white",paddingTop:6,paddingBottom:6}}>{props.beer.beer_name}</Text>
                   <Text style={{color:"white",paddingBottom:6}}>{props.beer.beer_percentage}</Text>
                   
@@ -36,8 +74,8 @@ const stockList =({navigation})=>{
                 </View>
     
                 <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-                <Text style={{color:"white",fontSize:30}}>{props.beer.stock}</Text>
-                </View>
+                    <Text style={{color:"white",fontSize:30}}>{props.beer.stock}</Text>
+                </View> */}
             </TouchableOpacity>
         )
     }
@@ -79,7 +117,9 @@ const stockList =({navigation})=>{
     return(
         <View style={styles.container}>
             <StatusBar hidden={true}/>
-            <FlatList ListHeaderComponent={<TextInput style={{height: 40 ,padding: 10,margin:2, backgroundColor:"white",borderRadius:5}} clearButtonMode="always"  placeholder="Search"  onChangeText={text=>handleSearch(text)} />} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  data={stock} renderItem={renderItem} keyExtractor={(item)=>{return item._id}} />
+            <FlatList 
+                ListHeaderComponent={<TextInput style={{height: 40 ,padding: 10,margin:2, backgroundColor:"white",borderRadius:5}} clearButtonMode="always"  placeholder="Search"  onChangeText={text=>handleSearch(text)} />} 
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  data={stock} renderItem={renderItem} keyExtractor={(item)=>{return item._id}} />
         </View>
     )
 }
@@ -102,14 +142,14 @@ const styles = StyleSheet.create({
     container: {
         
         flex: 1,
-        backgroundColor: colors.primary,
+        backgroundColor: colors.black,
         alignItems: 'stretch',
         justifyContent: 'center',
         padding:5
         
       },
       image:{
-          width:70,height:70,resizeMode:'contain'
+          width:100,height:100,resizeMode:'contain'
       },
       
       itemInvisible: {
